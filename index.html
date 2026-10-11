@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ColorSlides</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1d4fb8"><link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#dfe5ee;--pn:#fff;--tx:#1f2937;--mu:#6b7280;--ac:#2563eb;--ad:#1d4ed8;--bd:#d3dbe8;--ch:#eef3fb;--rb:#f5f8fc;--hv:#e4ecf9;--sl:#cddffb;--tb:#1d4fb8}
+body.dk{--bg:#0b1220;--pn:#152038;--tx:#e6ebf5;--mu:#9aa8c2;--ac:#6ea8ff;--ad:#8bb8ff;--bd:#2a3a55;--ch:#1b2a46;--rb:#111b30;--hv:#22355a;--sl:#2d4a7c;--tb:#0f2a66}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;overflow:hidden;font-size:13px;-webkit-user-select:none;user-select:none}
+button,select,input,textarea{font-family:inherit;font-size:inherit}button{color:inherit}
+.ic{display:block;flex:none;pointer-events:none}
+#top{background:var(--tb);color:#fff;height:44px;display:flex;align-items:center;gap:4px;padding:0 10px;flex:none}
+body.desk #top{-webkit-app-region:drag;padding-right:150px}body.desk #top button,body.desk #top input{-webkit-app-region:no-drag}
+#top .lg{width:24px;height:24px;border-radius:6px;margin-right:4px}
+#top .ttl{font-size:15px;font-weight:600;margin:0 10px 0 2px;white-space:nowrap}
+.tq{background:none;border:0;color:#fff;width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.tq:hover{background:rgba(255,255,255,.18)}
+#top .dn{flex:1;display:flex;justify-content:center;min-width:0}
+#fn{background:rgba(255,255,255,.14);border:1px solid transparent;color:#fff;border-radius:6px;padding:5px 10px;width:min(320px,100%);text-align:center;font-size:13.5px;outline:0}
+#fn:focus{background:#fff;color:#111}
+#top .play{background:#fff;color:var(--tb);border:0;border-radius:6px;height:30px;padding:0 12px 0 8px;display:flex;align-items:center;gap:6px;font-weight:600;cursor:pointer;margin-left:6px;flex:none}
+#top .play:hover{background:#e6efff}
+#tabs{display:flex;align-items:flex-end;background:var(--pn);padding:0 8px;height:38px;border-bottom:1px solid var(--bd);flex:none;overflow-x:auto;scrollbar-width:none}
+#tabs button{border:0;background:none;padding:0 16px;height:34px;font-size:13.5px;cursor:pointer;border-radius:6px 6px 0 0;position:relative;white-space:nowrap;flex:none}
+#tabs button:hover{background:var(--hv)}#tabs button.on{color:var(--ad);font-weight:600}
+#tabs button.on:after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:3px;background:var(--ac);border-radius:3px 3px 0 0}
+#rib{background:var(--rb);border-bottom:1px solid var(--bd);display:flex;align-items:stretch;padding:5px 6px;height:92px;flex:none;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.g{display:flex;flex-direction:column;border-right:1px solid var(--bd);padding:0 8px;flex:none}
+.g:last-child{border:0}
+.gb{flex:1;display:flex;align-items:center;gap:2px}
+.gl{text-align:center;font-size:11px;color:var(--mu);padding-top:2px;white-space:nowrap}
+.col{display:flex;flex-direction:column;gap:2px;justify-content:center}.row{display:flex;gap:2px;align-items:center}
+.b{border:1px solid transparent;background:none;border-radius:6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:52px;height:62px;padding:3px 6px;font-size:11.5px;line-height:1.1;text-align:center}
+.b:hover,.s:hover{background:var(--hv);border-color:var(--bd)}
+.b.on,.s.on{background:var(--sl);border-color:var(--ac)}
+.s{border:1px solid transparent;background:none;border-radius:5px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.s.w{width:auto;padding:0 8px;gap:5px}
+select,.nb{height:28px;border:1px solid var(--bd);border-radius:5px;background:var(--pn);color:var(--tx);padding:0 4px}
+.sw{width:18px;height:18px;border-radius:4px;border:1px solid rgba(0,0,0,.25);flex:none}
+.cb{position:relative}.cb .bar{position:absolute;left:6px;right:6px;bottom:4px;height:4px;border-radius:2px}
+.th{width:62px;height:44px;border-radius:6px;border:1px solid var(--bd);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;gap:2px;font-weight:600}
+.th:hover{outline:2px solid var(--ac)}
+#main{flex:1;display:flex;min-height:0}
+#thumbs{width:190px;flex:none;background:var(--pn);border-right:1px solid var(--bd);overflow-y:auto;padding:10px 8px;display:flex;flex-direction:column;gap:10px}
+body.nothumbs #thumbs{display:none}
+.tn{display:flex;gap:6px;align-items:flex-start;cursor:pointer;border-radius:6px;padding:3px}
+.tn .no{width:16px;font-size:11px;color:var(--mu);text-align:right;padding-top:2px}
+.tn .tc{position:relative;border:2px solid var(--bd);border-radius:4px;overflow:hidden;background:#fff;flex:none}
+.tn.on .tc{border-color:var(--ac);box-shadow:0 0 0 2px var(--sl)}
+.tn:hover .tc{border-color:var(--ac)}
+#cvw{flex:1;display:flex;flex-direction:column;min-width:0}
+#cv{flex:1;overflow:auto;display:flex;padding:20px;min-height:0;background:var(--bg)}
+#sw{margin:auto;position:relative;flex:none;box-shadow:0 4px 22px rgba(15,35,80,.28)}
+#st{position:absolute;left:0;top:0;width:960px;height:540px;transform-origin:0 0}
+#notes{height:78px;flex:none;border-top:1px solid var(--bd);background:var(--pn);display:flex;flex-direction:column}
+body.nonotes #notes{display:none}
+#notes label{font-size:11px;color:var(--mu);padding:3px 10px 0}
+#nt{flex:1;border:0;resize:none;background:transparent;color:var(--tx);padding:2px 10px 6px;outline:0;-webkit-user-select:text;user-select:text}
+#stat{height:28px;flex:none;background:var(--pn);border-top:1px solid var(--bd);display:flex;align-items:center;padding:0 10px;gap:8px;color:var(--mu);font-size:12px}
+#stat .sp{flex:1}#stat button{border:0;background:none;cursor:pointer;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center}
+#stat button:hover{background:var(--hv)}
+/* slide objects */
+.sl{position:absolute;left:0;top:0;width:960px;height:540px;overflow:hidden}
+.ob{position:absolute}
+.ob img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;-webkit-user-drag:none}
+.ob svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.tx{position:absolute;inset:0;padding:8px;display:flex;flex-direction:column;overflow:hidden;line-height:1.2;white-space:pre-wrap;word-break:break-word;pointer-events:none}
+.tx .p{min-height:1.2em}.tx .p.bu{padding-left:.9em;position:relative}.tx .p.bu:before{content:"\2022";position:absolute;left:0}
+.tx.ph:empty:before{content:attr(data-p);opacity:.45;font-style:italic;font-weight:400}
+.tx.ed{pointer-events:auto;outline:2px dashed #60a5fa;outline-offset:-2px;-webkit-user-select:text;user-select:text;cursor:text;overflow:visible;display:block}
+.pv .tx.ph:empty:before{content:none}
+#ov{position:absolute;left:0;top:0;width:960px;height:540px;pointer-events:none;transform-origin:0 0}
+.sb{position:absolute;border:2px solid #2563eb;pointer-events:none}
+.hd{position:absolute;background:#fff;border:2px solid #2563eb;border-radius:50%;pointer-events:auto;touch-action:none}
+/* popups, dialogs */
+#pop{position:fixed;z-index:50;background:var(--pn);border:1px solid var(--bd);border-radius:8px;box-shadow:0 8px 28px rgba(0,0,0,.25);padding:6px;display:none;max-height:75vh;overflow:auto}
+.mi{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:5px;cursor:pointer;white-space:nowrap;border:0;background:none;width:100%;text-align:left}
+.mi:hover{background:var(--hv)}.mi.sep{border-top:1px solid var(--bd);margin-top:4px;padding-top:0;pointer-events:none;height:4px}
+.pal{display:grid;grid-template-columns:repeat(7,24px);gap:5px;padding:4px}
+.pal i{width:24px;height:24px;border-radius:5px;border:1px solid rgba(0,0,0,.22);cursor:pointer}
+.lay{display:grid;grid-template-columns:repeat(3,96px);gap:8px;padding:4px}
+.lay div{cursor:pointer;text-align:center;font-size:11px;border:1px solid var(--bd);border-radius:6px;padding:4px}
+.lay div:hover{border-color:var(--ac);background:var(--hv)}
+.lay .lp{height:46px;background:#fff;border:1px solid #ccd;margin-bottom:3px;position:relative}.lay .lp b{position:absolute;background:#9db8ea;border-radius:2px}
+#dlgb{position:fixed;inset:0;background:rgba(10,20,40,.5);z-index:80;display:none;align-items:center;justify-content:center}
+#dlg{background:var(--pn);border-radius:12px;padding:20px 24px;max-width:460px;width:90%;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+#dlg h3{margin:0 0 10px;font-size:17px;color:var(--ad)}#dlg p{margin:0 0 14px;line-height:1.5}
+#dlg .bt{display:flex;justify-content:flex-end;gap:8px}
+#dlg button{border:1px solid var(--bd);background:var(--pn);border-radius:6px;padding:7px 16px;cursor:pointer}#dlg button.pr{background:var(--ac);color:#fff;border-color:var(--ac)}
+#toast{position:fixed;left:50%;bottom:50px;transform:translateX(-50%);background:#111c33;color:#fff;padding:8px 16px;border-radius:8px;z-index:90;display:none;font-size:13px}
+/* slideshow */
+#show{position:fixed;inset:0;background:#000;z-index:100;display:none;overflow:hidden;cursor:none}
+#show .sl{transform-origin:0 0;animation:fi .35s ease}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+#sctl{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:rgba(20,30,60,.8);border-radius:24px;padding:5px 10px;opacity:0;transition:opacity .3s;color:#fff;align-items:center}
+#show.hv #sctl{opacity:1}#show.hv{cursor:default}
+#sctl button{background:none;border:0;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}#sctl button:hover{background:rgba(255,255,255,.2)}
+#prt{display:none}
+@media print{
+ @page{size:960px 540px;margin:0}
+ html,body{height:auto;overflow:visible;background:#fff}
+ body>*:not(#prt){display:none!important}
+ #prt{display:block}
+ #prt .pg{width:960px;height:540px;position:relative;overflow:hidden;break-after:page;page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (max-width:820px){#thumbs{width:130px}.b{min-width:46px}}
+</style></head><body>
+<div id="top"></div><div id="tabs"></div><div id="rib"></div>
+<div id="main"><div id="thumbs"></div>
+<div id="cvw"><div id="cv"><div id="sw"><div id="st"></div><div id="ov"></div></div></div>
+<div id="notes"><label>Speaker notes</label><textarea id="nt" placeholder="Click to add notes"></textarea></div>
+<div id="stat"><span id="pg"></span><span class="sp"></span><button data-a="zout" title="Zoom out"></button><span id="zl" style="min-width:42px;text-align:center"></span><button data-a="zin" title="Zoom in"></button><button data-a="zfit" title="Fit slide to window"></button></div></div></div>
+<div id="pop"></div><div id="dlgb"><div id="dlg"></div></div><div id="toast"></div>
+<div id="show"><div id="sctl"><button data-a="sprev" title="Previous"></button><span id="spg" style="min-width:56px;text-align:center"></span><button data-a="snext" title="Next"></button><button data-a="sexit" title="Exit (Esc)"></button></div></div>
+<div id="prt"></div>
+<input type="file" id="fpic" accept="image/*" hidden><input type="file" id="fopen" accept=".cslides,.json,.pptx" hidden>
+<script>
+'use strict';
+const W=960,H=540,$=s=>document.querySelector(s);
+const IC={"new": "<path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/><path d=\"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2\"/><path d=\"M12 11l0 6\"/><path d=\"M9 14l6 0\"/>", "open": "<path d=\"M5 19l2.757 -7.351a1 1 0 0 1 .936 -.649h12.307a1 1 0 0 1 .986 1.164l-.996 5.211a2 2 0 0 1 -1.964 1.625h-14.026a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v2\"/>", "save": "<path d=\"M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2\"/><path d=\"M10 14a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M14 4l0 4l-6 0l0 -4\"/>", "saveas": "<path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/><path d=\"M11.5 21h-4.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v5m-5 6h7m-3 -3l3 3l-3 3\"/>", "print": "<path d=\"M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2\"/><path d=\"M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4\"/><path d=\"M7 15a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2l0 -4\"/>", "pdf": "<path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/><path d=\"M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4\"/><path d=\"M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6\"/><path d=\"M17 18h2\"/><path d=\"M20 15h-3v6\"/><path d=\"M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1\"/>", "docx": "<path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/><path d=\"M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4\"/><path d=\"M2 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1\"/><path d=\"M17 16.5a1.5 1.5 0 0 0 -3 0v3a1.5 1.5 0 0 0 3 0\"/><path d=\"M9.5 15a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1 -3 0v-3a1.5 1.5 0 0 1 1.5 -1.5\"/><path d=\"M19.5 15l3 6\"/><path d=\"M19.5 21l3 -6\"/>", "html": "<path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/><path d=\"M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4\"/><path d=\"M2 21v-6\"/><path d=\"M5 15v6\"/><path d=\"M2 18h3\"/><path d=\"M20 15v6h2\"/><path d=\"M13 21v-6l2 3l2 -3v6\"/><path d=\"M7.5 15h3\"/><path d=\"M9 15v6\"/>", "txt": "<path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/><path d=\"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2\"/><path d=\"M9 9l1 0\"/><path d=\"M9 13l6 0\"/><path d=\"M9 17l6 0\"/>", "props": "<path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0\"/><path d=\"M12 9h.01\"/><path d=\"M11 12h1v4h1\"/>", "about": "<path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0\"/><path d=\"M12 16v.01\"/><path d=\"M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483\"/>", "undo": "<path d=\"M9 14l-4 -4l4 -4\"/><path d=\"M5 10h11a4 4 0 1 1 0 8h-1\"/>", "redo": "<path d=\"M15 14l4 -4l-4 -4\"/><path d=\"M19 10h-11a4 4 0 1 0 0 8h1\"/>", "paste": "<path d=\"M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2\"/><path d=\"M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2\"/>", "pastetext": "<path d=\"M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2\"/><path d=\"M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2\"/><path d=\"M9 12h6\"/><path d=\"M9 16h6\"/>", "cut": "<path d=\"M3 7a3 3 0 1 0 6 0a3 3 0 1 0 -6 0\"/><path d=\"M3 17a3 3 0 1 0 6 0a3 3 0 1 0 -6 0\"/><path d=\"M8.6 8.6l10.4 10.4\"/><path d=\"M8.6 15.4l10.4 -10.4\"/>", "copy": "<path d=\"M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666\"/><path d=\"M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1\"/>", "selall": "<path d=\"M8 9a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1l0 -6\"/><path d=\"M12 20v.01\"/><path d=\"M16 20v.01\"/><path d=\"M8 20v.01\"/><path d=\"M4 20v.01\"/><path d=\"M4 16v.01\"/><path d=\"M4 12v.01\"/><path d=\"M4 8v.01\"/><path d=\"M4 4v.01\"/><path d=\"M8 4v.01\"/><path d=\"M12 4v.01\"/><path d=\"M16 4v.01\"/><path d=\"M20 4v.01\"/><path d=\"M20 8v.01\"/><path d=\"M20 12v.01\"/><path d=\"M20 16v.01\"/><path d=\"M20 20v.01\"/>", "fp": "<path d=\"M5 5a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2l0 -2\"/><path d=\"M19 6h1a2 2 0 0 1 2 2a5 5 0 0 1 -5 5l-5 0v2\"/><path d=\"M10 16a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -4\"/>", "bold": "<path d=\"M7 5h6a3.5 3.5 0 0 1 0 7h-6l0 -7\"/><path d=\"M13 12h1a3.5 3.5 0 0 1 0 7h-7v-7\"/>", "italic": "<path d=\"M11 5l6 0\"/><path d=\"M7 19l6 0\"/><path d=\"M14 5l-4 14\"/>", "underline": "<path d=\"M7 5v5a5 5 0 0 0 10 0v-5\"/><path d=\"M5 19h14\"/>", "strike": "<path d=\"M5 12l14 0\"/><path d=\"M16 6.5a4 2 0 0 0 -4 -1.5h-1a3.5 3.5 0 0 0 0 7h2a3.5 3.5 0 0 1 0 7h-1.5a4 2 0 0 1 -4 -1.5\"/>", "sub": "<path d=\"M5 7l8 10m-8 0l8 -10\"/><path d=\"M21 20h-4l3.5 -4a1.73 1.73 0 0 0 -3.5 -2\"/>", "sup": "<path d=\"M5 7l8 10m-8 0l8 -10\"/><path d=\"M21 11h-4l3.5 -4a1.73 1.73 0 0 0 -3.5 -2\"/>", "grow": "<path d=\"M4 19v-10.5a3.5 3.5 0 1 1 7 0v10.5\"/><path d=\"M4 13h7\"/><path d=\"M18 9v6\"/><path d=\"M21 12h-6\"/>", "shrink": "<path d=\"M4 19v-10.5a3.5 3.5 0 1 1 7 0v10.5\"/><path d=\"M4 13h7\"/><path d=\"M21 12h-6\"/>", "clearf": "<path d=\"M17 15l4 4m0 -4l-4 4\"/><path d=\"M7 6v-1h11v1\"/><path d=\"M7 19l4 0\"/><path d=\"M13 5l-4 14\"/>", "caseic": "<path d=\"M14 15.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0\"/><path d=\"M3 19v-10.5a3.5 3.5 0 0 1 7 0v10.5\"/><path d=\"M3 13h7\"/><path d=\"M21 12v7\"/>", "fcolor": "<path d=\"M7 20v-12a4 4 0 0 1 4 -4h2a4 4 0 0 1 4 4v12\"/><path d=\"M7 13l10 0\"/>", "hl": "<path d=\"M3 19h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4\"/><path d=\"M12.5 5.5l4 4\"/><path d=\"M4.5 13.5l4 4\"/><path d=\"M21 15v4h-8l4 -4l4 0\"/>", "ul": "<path d=\"M9 6l11 0\"/><path d=\"M9 12l11 0\"/><path d=\"M9 18l11 0\"/><path d=\"M5 6l0 .01\"/><path d=\"M5 12l0 .01\"/><path d=\"M5 18l0 .01\"/>", "ol": "<path d=\"M11 6h9\"/><path d=\"M11 12h9\"/><path d=\"M12 18h8\"/><path d=\"M4 16a2 2 0 1 1 4 0c0 .591 -.5 1 -1 1.5l-3 2.5h4\"/><path d=\"M6 10v-6l-2 2\"/>", "outd": "<path d=\"M20 6l-7 0\"/><path d=\"M20 12l-9 0\"/><path d=\"M20 18l-7 0\"/><path d=\"M8 8l-4 4l4 4\"/>", "ind": "<path d=\"M20 6l-11 0\"/><path d=\"M20 12l-7 0\"/><path d=\"M20 18l-11 0\"/><path d=\"M4 8l4 4l-4 4\"/>", "al": "<path d=\"M4 6l16 0\"/><path d=\"M4 12l10 0\"/><path d=\"M4 18l14 0\"/>", "ac": "<path d=\"M4 6l16 0\"/><path d=\"M8 12l8 0\"/><path d=\"M6 18l12 0\"/>", "ar": "<path d=\"M4 6l16 0\"/><path d=\"M10 12l10 0\"/><path d=\"M6 18l14 0\"/>", "aj": "<path d=\"M4 6l16 0\"/><path d=\"M4 12l16 0\"/><path d=\"M4 18l12 0\"/>", "lsp": "<path d=\"M3 8l3 -3l3 3\"/><path d=\"M3 16l3 3l3 -3\"/><path d=\"M6 5l0 14\"/><path d=\"M13 6l7 0\"/><path d=\"M13 12l7 0\"/><path d=\"M13 18l7 0\"/>", "para": "<path d=\"M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M4 6l8 0\"/><path d=\"M16 6l4 0\"/><path d=\"M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M4 12l2 0\"/><path d=\"M10 12l10 0\"/><path d=\"M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M4 18l11 0\"/><path d=\"M19 18l1 0\"/>", "pbd": "<path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\"/><path d=\"M4 12l16 0\"/><path d=\"M12 4l0 16\"/>", "shade": "<path d=\"M5 16l1.465 1.638a2 2 0 1 1 -3.015 .099l1.55 -1.737\"/><path d=\"M13.737 9.737c2.299 -2.3 3.23 -5.095 2.081 -6.245c-1.15 -1.15 -3.945 -.217 -6.244 2.082c-2.3 2.299 -3.231 5.095 -2.082 6.244c1.15 1.15 3.946 .218 6.245 -2.081\"/><path d=\"M7.492 11.818c.362 .362 .768 .676 1.208 .934l6.895 4.047c1.078 .557 2.255 -.075 3.692 -1.512c1.437 -1.437 2.07 -2.614 1.512 -3.692c-.372 -.718 -1.72 -3.017 -4.047 -6.895a6.015 6.015 0 0 0 -.934 -1.208\"/>", "ltr": "<path d=\"M5 19h14\"/><path d=\"M17 21l2 -2l-2 -2\"/><path d=\"M16 4h-6.5a3.5 3.5 0 0 0 0 7h.5\"/><path d=\"M14 15v-11\"/><path d=\"M10 15v-11\"/>", "rtl": "<path d=\"M16 4h-6.5a3.5 3.5 0 0 0 0 7h.5\"/><path d=\"M14 15v-11\"/><path d=\"M10 15v-11\"/><path d=\"M5 19h14\"/><path d=\"M7 21l-2 -2l2 -2\"/>", "dropc": "<path d=\"M3 7v-2h13v2\"/><path d=\"M10 5v14\"/><path d=\"M12 19h-4\"/><path d=\"M15 13v-1h6v1\"/><path d=\"M18 12v7\"/><path d=\"M17 19h2\"/>", "marks": "<path d=\"M13 4v16\"/><path d=\"M17 4v16\"/><path d=\"M19 4h-9.5a4.5 4.5 0 0 0 0 9h3.5\"/>", "find": "<path d=\"M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/><path d=\"M21 21l-6 -6\"/>", "replace": "<path d=\"M3 4a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4\"/><path d=\"M15 16a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4\"/><path d=\"M21 11v-3a2 2 0 0 0 -2 -2h-6l3 3m0 -6l-3 3\"/><path d=\"M3 13v3a2 2 0 0 0 2 2h6l-3 -3m0 6l3 -3\"/>", "spell": "<path d=\"M3 16v-6a2 2 0 1 1 4 0v6\"/><path d=\"M3 13h4\"/><path d=\"M10 8v6a2 2 0 1 0 4 0v-1a2 2 0 1 0 -4 0v1\"/><path d=\"M20.732 12a2 2 0 0 0 -3.732 1v1a2 2 0 0 0 3.726 1.01\"/>", "nav": "<path d=\"M11 15a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\"/><path d=\"M18.5 18.5l2.5 2.5\"/><path d=\"M4 6h16\"/><path d=\"M4 12h4\"/><path d=\"M4 18h4\"/>", "pbreak": "<path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/><path d=\"M19 18v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1\"/><path d=\"M3 14h3m4.5 0h3m4.5 0h3\"/><path d=\"M5 10v-5a2 2 0 0 1 2 -2h7l5 5v2\"/>", "hr": "<path d=\"M5 12l14 0\"/>", "table": "<path d=\"M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14\"/><path d=\"M3 10h18\"/><path d=\"M10 3v18\"/>", "pic": "<path d=\"M15 8h.01\"/><path d=\"M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12\"/><path d=\"M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5\"/><path d=\"M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3\"/>", "shapes": "<path d=\"M3 5a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M17 5a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M3 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M17 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M5 7l0 10\"/><path d=\"M7 5l10 0\"/><path d=\"M7 19l10 0\"/><path d=\"M19 7l0 10\"/>", "tbox": "<path d=\"M4 15h16\"/><path d=\"M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4\"/><path d=\"M4 20h12\"/>", "link": "<path d=\"M9 15l6 -6\"/><path d=\"M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464\"/><path d=\"M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463\"/>", "unlink": "<path d=\"M9 15l3 -3m2 -2l1 -1\"/><path d=\"M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464\"/><path d=\"M3 3l18 18\"/><path d=\"M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463\"/>", "sym": "<path d=\"M4 19h5v-1a7.35 7.35 0 1 1 6 0v1h5\"/>", "date": "<path d=\"M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12\"/><path d=\"M16 3v4\"/><path d=\"M8 3v4\"/><path d=\"M4 11h16\"/><path d=\"M11 15h1\"/><path d=\"M12 15v3\"/>", "time": "<path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0\"/><path d=\"M12 7v5l3 3\"/>", "hdr": "<path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\"/><path d=\"M4 9l16 0\"/>", "ftr": "<path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\"/><path d=\"M4 15l16 0\"/>", "wm": "<path d=\"M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546\"/>", "rect": "<path d=\"M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14\"/>", "round": "<path d=\"M12 3c7.2 0 9 1.8 9 9c0 7.2 -1.8 9 -9 9c-7.2 0 -9 -1.8 -9 -9c0 -7.2 1.8 -9 9 -9\"/>", "ellipse": "<path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\"/>", "tri": "<path d=\"M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0\"/>", "diamond": "<path d=\"M6 5h12l3 5l-8.5 9.5a.7 .7 0 0 1 -1 0l-8.5 -9.5l3 -5\"/><path d=\"M10 12l-2 -2.2l.6 -1\"/>", "arrow": "<path d=\"M5 12l14 0\"/><path d=\"M13 18l6 -6\"/><path d=\"M13 6l6 6\"/>", "star": "<path d=\"M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245\"/>", "hexa": "<path d=\"M19.875 6.27a2.225 2.225 0 0 1 1.125 1.948v7.284c0 .809 -.443 1.555 -1.158 1.948l-6.75 4.27a2.269 2.269 0 0 1 -2.184 0l-6.75 -4.27a2.225 2.225 0 0 1 -1.158 -1.948v-7.285c0 -.809 .443 -1.554 1.158 -1.947l6.75 -3.98a2.33 2.33 0 0 1 2.25 0l6.75 3.98h-.033\"/>", "heart": "<path d=\"M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572\"/>", "bubble": "<path d=\"M8 9h8\"/><path d=\"M8 13h6\"/><path d=\"M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12\"/>", "line": "<path d=\"M5 12l14 0\"/>", "obig": "<path d=\"M16 4l4 0l0 4\"/><path d=\"M14 10l6 -6\"/><path d=\"M8 20l-4 0l0 -4\"/><path d=\"M4 20l6 -6\"/><path d=\"M16 20l4 0l0 -4\"/><path d=\"M14 14l6 6\"/><path d=\"M8 4l-4 0l0 4\"/><path d=\"M4 4l6 6\"/>", "osmall": "<path d=\"M5 9l4 0l0 -4\"/><path d=\"M3 3l6 6\"/><path d=\"M5 15l4 0l0 4\"/><path d=\"M3 21l6 -6\"/><path d=\"M19 9l-4 0l0 -4\"/><path d=\"M15 9l6 -6\"/><path d=\"M19 15l-4 0l0 4\"/><path d=\"M15 15l6 6\"/>", "orot": "<path d=\"M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5\"/>", "oflip": "<path d=\"M3 12l18 0\"/><path d=\"M7 16l10 0l-10 5l0 -5\"/><path d=\"M7 8l10 0l-10 -5l0 5\"/>", "obd": "<path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\"/><path d=\"M12 8l0 .01\"/><path d=\"M8 12l0 .01\"/><path d=\"M12 12l0 .01\"/><path d=\"M16 12l0 .01\"/><path d=\"M12 16l0 .01\"/>", "osh": "<path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\"/><path d=\"M13 12h5\"/><path d=\"M13 15h4\"/><path d=\"M13 18h1\"/><path d=\"M13 9h4\"/><path d=\"M13 6h1\"/>", "ogr": "<path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\"/><path d=\"M12 17a5 5 0 0 0 0 -10v10\"/>", "oin": "<path d=\"M4 6l10 0\"/><path d=\"M4 18l10 0\"/><path d=\"M4 12h17l-3 -3m0 6l3 -3\"/>", "owl": "<path d=\"M4 4l0 16\"/><path d=\"M8 11a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -2\"/>", "owr": "<path d=\"M20 4l0 16\"/><path d=\"M4 11a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -2\"/>", "ocn": "<path d=\"M12 4l0 5\"/><path d=\"M12 15l0 5\"/><path d=\"M6 11a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -2\"/>", "odel": "<path d=\"M4 7l16 0\"/><path d=\"M10 11l0 6\"/><path d=\"M14 11l0 6\"/><path d=\"M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12\"/><path d=\"M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3\"/>", "ofill": "<path d=\"M5 16l1.465 1.638a2 2 0 1 1 -3.015 .099l1.55 -1.737\"/><path d=\"M13.737 9.737c2.299 -2.3 3.23 -5.095 2.081 -6.245c-1.15 -1.15 -3.945 -.217 -6.244 2.082c-2.3 2.299 -3.231 5.095 -2.082 6.244c1.15 1.15 3.946 .218 6.245 -2.081\"/><path d=\"M7.492 11.818c.362 .362 .768 .676 1.208 .934l6.895 4.047c1.078 .557 2.255 -.075 3.692 -1.512c1.437 -1.437 2.07 -2.614 1.512 -3.692c-.372 -.718 -1.72 -3.017 -4.047 -6.895a6.015 6.015 0 0 0 -.934 -1.208\"/>", "oline": "<path d=\"M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4\"/><path d=\"M13.5 6.5l4 4\"/>", "tar": "<path d=\"M4 18v-4a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1\"/><path d=\"M12 9v-4\"/><path d=\"M10 7l4 0\"/>", "tarb": "<path d=\"M20 6v4a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1\"/><path d=\"M12 15l0 4\"/><path d=\"M14 17l-4 0\"/>", "tcl": "<path d=\"M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1\"/><path d=\"M5 12l4 0\"/><path d=\"M7 10l0 4\"/>", "tcr": "<path d=\"M6 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1\"/><path d=\"M15 12l4 0\"/><path d=\"M17 10l0 4\"/>", "tdr": "<path d=\"M20 6v4a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1\"/><path d=\"M10 16l4 4\"/><path d=\"M10 20l4 -4\"/>", "tdc": "<path d=\"M6 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1\"/><path d=\"M16 10l4 4\"/><path d=\"M16 14l4 -4\"/>", "tdt": "<path d=\"M7 3h12a2 2 0 0 1 2 2v12m-.585 3.413a1.994 1.994 0 0 1 -1.415 .587h-14a2 2 0 0 1 -2 -2v-14c0 -.55 .223 -1.05 .583 -1.412\"/><path d=\"M3 10h7m4 0h7\"/><path d=\"M10 3v3m0 4v11\"/><path d=\"M3 3l18 18\"/>", "tmerge": "<path d=\"M3 7h5l3.5 5h9.5\"/><path d=\"M3 17h5l3.495 -5\"/><path d=\"M18 15l3 -3l-3 -3\"/>", "tsplit": "<path d=\"M21 17h-8l-3.5 -5h-6.5\"/><path d=\"M21 7h-8l-3.495 5\"/><path d=\"M18 10l3 -3l-3 -3\"/><path d=\"M18 20l3 -3l-3 -3\"/>", "tbd": "<path d=\"M4 4l0 .01\"/><path d=\"M8 4l0 .01\"/><path d=\"M12 4l0 .01\"/><path d=\"M16 4l0 .01\"/><path d=\"M20 4l0 .01\"/><path d=\"M4 8l0 .01\"/><path d=\"M12 8l0 .01\"/><path d=\"M20 8l0 .01\"/><path d=\"M4 12l0 .01\"/><path d=\"M8 12l0 .01\"/><path d=\"M12 12l0 .01\"/><path d=\"M16 12l0 .01\"/><path d=\"M20 12l0 .01\"/><path d=\"M4 16l0 .01\"/><path d=\"M12 16l0 .01\"/><path d=\"M20 16l0 .01\"/><path d=\"M4 20l0 .01\"/><path d=\"M8 20l0 .01\"/><path d=\"M12 20l0 .01\"/><path d=\"M16 20l0 .01\"/><path d=\"M20 20l0 .01\"/>", "tbdc": "<path d=\"M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25\"/><path d=\"M7.5 10.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M11.5 7.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M15.5 10.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/>", "thead": "<path d=\"M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14\"/><path d=\"M9 3l-6 6\"/><path d=\"M14 3l-7 7\"/><path d=\"M19 3l-7 7\"/><path d=\"M21 6l-4 4\"/><path d=\"M3 10h18\"/><path d=\"M10 10v11\"/>", "tfit": "<path d=\"M7 8l-4 4l4 4\"/><path d=\"M17 8l4 4l-4 4\"/><path d=\"M3 12l18 0\"/>", "tstyle": "<path d=\"M12 21h-7a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7\"/><path d=\"M3 10h18\"/><path d=\"M10 3v18\"/><path d=\"M17.001 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M19.001 15.5v1.5\"/><path d=\"M19.001 21v1.5\"/><path d=\"M22.032 17.25l-1.299 .75\"/><path d=\"M17.27 20l-1.3 .75\"/><path d=\"M15.97 17.25l1.3 .75\"/><path d=\"M20.733 20l1.3 .75\"/>", "mar": "<path d=\"M4 12l16 0\"/><path d=\"M12 4l0 16\"/><path d=\"M4 4l0 .01\"/><path d=\"M8 4l0 .01\"/><path d=\"M16 4l0 .01\"/><path d=\"M20 4l0 .01\"/><path d=\"M4 8l0 .01\"/><path d=\"M20 8l0 .01\"/><path d=\"M4 16l0 .01\"/><path d=\"M20 16l0 .01\"/><path d=\"M4 20l0 .01\"/><path d=\"M8 20l0 .01\"/><path d=\"M16 20l0 .01\"/><path d=\"M20 20l0 .01\"/>", "ori": "<path d=\"M5 5a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2l0 -14\"/>", "size": "<path d=\"M5 4h14a1 1 0 0 1 1 1v5a1 1 0 0 1 -1 1h-7a1 1 0 0 0 -1 1v7a1 1 0 0 1 -1 1h-5a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1\"/><path d=\"M4 8l2 0\"/><path d=\"M4 12l3 0\"/><path d=\"M4 16l2 0\"/><path d=\"M8 4l0 2\"/><path d=\"M12 4l0 3\"/><path d=\"M16 4l0 2\"/>", "cols": "<path d=\"M4 6l5.5 0\"/><path d=\"M4 10l5.5 0\"/><path d=\"M4 14l5.5 0\"/><path d=\"M4 18l5.5 0\"/><path d=\"M14.5 6l5.5 0\"/><path d=\"M14.5 10l5.5 0\"/><path d=\"M14.5 14l5.5 0\"/><path d=\"M14.5 18l5.5 0\"/>", "pgn": "<path d=\"M5 9l14 0\"/><path d=\"M5 15l14 0\"/><path d=\"M11 4l-4 16\"/><path d=\"M17 4l-4 16\"/>", "pgc": "<path d=\"M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25\"/><path d=\"M7.5 10.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M11.5 7.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M15.5 10.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/>", "pgb": "<path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\"/><path d=\"M12 8l0 .01\"/><path d=\"M8 12l0 .01\"/><path d=\"M12 12l0 .01\"/><path d=\"M16 12l0 .01\"/><path d=\"M12 16l0 .01\"/>", "hyph": "<path d=\"M4 6l16 0\"/><path d=\"M4 18l5 0\"/><path d=\"M4 12h13a3 3 0 0 1 0 6h-4l2 -2m0 4l-2 -2\"/>", "zin": "<path d=\"M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/><path d=\"M7 10l6 0\"/><path d=\"M10 7l0 6\"/><path d=\"M21 21l-6 -6\"/>", "zout": "<path d=\"M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/><path d=\"M7 10l6 0\"/><path d=\"M21 21l-6 -6\"/>", "z100": "<path d=\"M21 21l-6 -6\"/><path d=\"M3.268 12.043a7.017 7.017 0 0 0 6.634 4.957a7.012 7.012 0 0 0 7.043 -6.131a7 7 0 0 0 -5.314 -7.672a7.021 7.021 0 0 0 -8.241 4.403\"/><path d=\"M3 4v4h4\"/>", "zfit": "<path d=\"M7 8l-4 4l4 4\"/><path d=\"M17 8l4 4l-4 4\"/><path d=\"M3 12l18 0\"/>", "rul": "<path d=\"M17 3l4 4l-14 14l-4 -4l14 -14\"/><path d=\"M16 7l-1.5 -1.5\"/><path d=\"M13 10l-1.5 -1.5\"/><path d=\"M10 13l-1.5 -1.5\"/><path d=\"M7 16l-1.5 -1.5\"/>", "dark": "<path d=\"M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008\"/>", "full": "<path d=\"M4 8v-2a2 2 0 0 1 2 -2h2\"/><path d=\"M4 16v2a2 2 0 0 0 2 2h2\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v2\"/><path d=\"M16 20h2a2 2 0 0 0 2 -2v-2\"/>", "focus": "<path d=\"M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0\"/><path d=\"M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0\"/><path d=\"M3 6l0 13\"/><path d=\"M12 6l0 13\"/><path d=\"M21 6l0 13\"/>", "chev": "<path d=\"M6 9l6 6l6 -6\"/>", "chevup": "<path d=\"M6 15l6 -6l6 6\"/>", "check": "<path d=\"M5 12l5 5l10 -10\"/>", "x": "<path d=\"M18 6l-12 12\"/><path d=\"M6 6l12 12\"/>", "back": "<path d=\"M5 12l14 0\"/><path d=\"M5 12l6 6\"/><path d=\"M5 12l6 -6\"/>", "left": "<path d=\"M15 6l-6 6l6 6\"/>", "right": "<path d=\"M9 6l6 6l-6 6\"/>", "file": "<path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/><path d=\"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2\"/>", "sun": "<path d=\"M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\"/><path d=\"M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7\"/>", "layout": "<path d=\"M4 6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2l0 -1\"/><path d=\"M4 15a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2l0 -3\"/><path d=\"M14 6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2l0 -12\"/>", "play": "<path d=\"M7 4v16l13-8z\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "trash": "<path d=\"M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3\"/>", "dup": "<rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2\"/>", "notes": "<path d=\"M5 4h14v12H9l-4 4z\"/><path d=\"M9 8h6M9 12h4\"/>", "bg": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 15l5-4 4 3 3-2 6 4\"/>"};
+const ic=(n,s=18,w=1.8)=>`<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${IC[n]||''}</svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const FONTS=['Segoe UI','Arial','Calibri','Verdana','Trebuchet MS','Georgia','Times New Roman','Courier New','Impact','Comic Sans MS'];
+const FF=f=>`"${f}",Arial,sans-serif`;
+const TH=[
+{n:'Ocean',bg:'#ffffff',tx:'#12306b',ac:'#2563eb'},{n:'Midnight',bg:'#0f1b3d',tx:'#ffffff',ac:'#60a5fa'},
+{n:'Sky',bg:'#eaf4ff',tx:'#0b3b8f',ac:'#0ea5e9'},{n:'Sunset',bg:'#fff7ed',tx:'#7c2d12',ac:'#f97316'},
+{n:'Forest',bg:'#f0fdf4',tx:'#14532d',ac:'#16a34a'},{n:'Berry',bg:'#fdf2f8',tx:'#701a75',ac:'#c026d3'},
+{n:'Slate',bg:'#f1f5f9',tx:'#1e293b',ac:'#475569'},{n:'Navy Gold',bg:'#172554',tx:'#fde68a',ac:'#f59e0b'}];
+const PAL=['#000000','#ffffff','#1f2937','#6b7280','#9ca3af','#d1d5db','#eef3fb','#0b1f4d','#12306b','#1d4ed8','#2563eb','#3b82f6','#60a5fa','#bfdbfe','#dc2626','#f97316','#f59e0b','#facc15','#84cc16','#16a34a','#14b8a6','#06b6d4','#8b5cf6','#c026d3','#ec4899','#be123c','#7c2d12','#14532d'];
+const SHAPES=[['rect','Rectangle'],['round','Rounded rectangle'],['ellipse','Oval'],['tri','Triangle'],['diamond','Diamond'],['hexa','Hexagon'],['arrow','Arrow'],['star','Star'],['heart','Heart'],['line','Line']];
+let D,cur=0,selId=null,clip=null,hist=[],fut=[],zoomMode='fit',zoomK=1,IMG={},k=1,editing=false,dirty=false;
+const th=()=>TH[D.theme]||TH[0];
+const S=()=>D.slides[cur];
+const O=id=>S().objs.find(o=>o.id===id);
+const SO=()=>selId?O(selId):null;
+
+/* ---------- model ---------- */
+function tb(o){return Object.assign({id:uid(),k:'shape',sh:'rect',x:100,y:100,w:300,h:80,fill:'none',st:'none',sw:2,text:'',ff:'Segoe UI',fs:28,c:th().tx,b:0,i:0,u:0,al:'l',va:'t',bul:0,ph:null},o)}
+function layout(n){const t=th(),T=(o)=>tb(o);
+ const title=(o)=>T(Object.assign({ph:'title',x:60,y:36,w:840,h:100,fs:40,b:1,va:'m',c:t.tx},o));
+ const body=(o)=>T(Object.assign({ph:'body',x:60,y:160,w:840,h:330,fs:26,bul:1,c:t.tx},o));
+ switch(n){
+ case'title':return[title({y:150,h:130,fs:54,al:'c',x:80,w:800}),T({ph:'sub',x:160,y:300,w:640,h:80,fs:26,al:'c',va:'t',c:t.ac}),T({k:'shape',sh:'rect',x:420,y:290,w:120,h:5,fill:t.ac,text:''})];
+ case'content':return[title(),body()];
+ case'two':return[title(),body({w:410,fs:24}),body({x:490,w:410,fs:24})];
+ case'only':return[title()];
+ case'section':return[title({y:190,h:120,fs:48,al:'l',x:80,w:800}),T({k:'shape',sh:'rect',x:80,y:320,w:160,h:6,fill:t.ac})];
+ default:return[]}}
+const LAYS=[['title','Title'],['content','Title & content'],['two','Two content'],['only','Title only'],['section','Section'],['blank','Blank']];
+function newSlide(l){return{id:uid(),bg:th().bg,notes:'',objs:layout(l)}}
+function newDoc(){D={title:'Presentation1',theme:0,slides:[]};D.slides=[newSlide('title'),newSlide('content')];cur=0;selId=null;hist=[];fut=[]}
+const ser=()=>JSON.stringify({d:D,cur});
+function mut(fn,keepSel){hist.push(ser());if(hist.length>80)hist.shift();fut=[];fn();dirty=true;render();persist()}
+function undo(){if(!hist.length)return;fut.push(ser());const s=JSON.parse(hist.pop());D=s.d;cur=Math.min(s.cur,D.slides.length-1);if(!S().objs.some(o=>o.id===selId))selId=null;render();persist()}
+function redo(){if(!fut.length)return;hist.push(ser());const s=JSON.parse(fut.pop());D=s.d;cur=Math.min(s.cur,D.slides.length-1);if(!S().objs.some(o=>o.id===selId))selId=null;render();persist()}
+function usedImgs(){const u={};D.slides.forEach(s=>s.objs.forEach(o=>{if(o.k==='img'&&IMG[o.src])u[o.src]=IMG[o.src]}));return u}
+let pt;function persist(){clearTimeout(pt);pt=setTimeout(()=>{try{localStorage.setItem('cslides-auto',JSON.stringify({d:D,imgs:usedImgs()}));$('#fn').title='Autosaved'}catch(e){}},500)}
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2200)}
+function dlg(title,html,btns){$('#dlg').innerHTML=`<h3>${title}</h3><p>${html}</p><div class="bt">${(btns||[['OK',1]]).map((b,i)=>`<button class="${b[1]?'pr':''}" data-d="${i}">${b[0]}</button>`).join('')}</div>`;$('#dlgb').style.display='flex';$('#dlg').onclick=e=>{const b=e.target.closest('button');if(!b)return;$('#dlgb').style.display='none';const f=(btns||[[0,0,0]])[+b.dataset.d][2];f&&f()}}
+
+/* ---------- rendering ---------- */
+const poly=(p,w,h)=>'M'+p.map(q=>(q[0]*w).toFixed(1)+' '+(q[1]*h).toFixed(1)).join('L')+'Z';
+function shapeD(sh,w,h){switch(sh){
+ case'ellipse':return`M0 ${h/2}A${w/2} ${h/2} 0 1 0 ${w} ${h/2}A${w/2} ${h/2} 0 1 0 0 ${h/2}Z`;
+ case'round':{const r=Math.min(w,h)/6;return`M${r} 0H${w-r}Q${w} 0 ${w} ${r}V${h-r}Q${w} ${h} ${w-r} ${h}H${r}Q0 ${h} 0 ${h-r}V${r}Q0 0 ${r} 0Z`}
+ case'tri':return poly([[.5,0],[1,1],[0,1]],w,h);
+ case'diamond':return poly([[.5,0],[1,.5],[.5,1],[0,.5]],w,h);
+ case'hexa':return poly([[.25,0],[.75,0],[1,.5],[.75,1],[.25,1],[0,.5]],w,h);
+ case'arrow':return poly([[0,.3],[.6,.3],[.6,0],[1,.5],[.6,1],[.6,.7],[0,.7]],w,h);
+ case'star':{const p=[];for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?.382:1;p.push([.5+.5*r*Math.cos(a),.5+.5*r*Math.sin(a)])}return poly(p,w,h)}
+ case'heart':return`M${w/2} ${h*.95}C${-w*.1} ${h*.45} ${w*.15} ${-h*.1} ${w/2} ${h*.28}C${w*.85} ${-h*.1} ${w*1.1} ${h*.45} ${w/2} ${h*.95}Z`;
+ case'line':return`M0 ${h/2}H${w}`;
+ default:return`M0 0H${w}V${h}H0Z`}}
+function tstyle(o){return`font-family:${FF(o.ff)};font-size:${o.fs}px;color:${o.c};font-weight:${o.b?700:400};font-style:${o.i?'italic':'normal'};text-decoration:${o.u?'underline':'none'};text-align:${{l:'left',c:'center',r:'right'}[o.al]};justify-content:${{t:'flex-start',m:'center',b:'flex-end'}[o.va]}`}
+function objEl(o,pv){const e=document.createElement('div');e.className='ob';e.dataset.id=o.id;e.style.cssText=`left:${o.x}px;top:${o.y}px;width:${o.w}px;height:${o.h}px`;
+ if(o.k==='img'){const i=document.createElement('img');i.src=IMG[o.src]||'';e.appendChild(i);return e}
+ const fl=o.fill==='none'?'none':o.fill,sk=o.st==='none'?'none':o.st;
+ e.innerHTML=`<svg width="${o.w}" height="${o.h}" viewBox="0 0 ${o.w} ${o.h}"><path d="${shapeD(o.sh,o.w,o.h)}" fill="${o.sh==='line'?'none':fl}" stroke="${sk}" stroke-width="${o.sw}" stroke-linejoin="round"/></svg>`;
+ if(o.sh!=='line'&&(o.text||(!pv&&o.ph))){const t=document.createElement('div');t.className='tx'+(o.ph&&!o.text?' ph':'');t.style.cssText=tstyle(o);
+  if(o.ph&&!o.text)t.dataset.p={title:'Click to add title',body:'Click to add text',sub:'Click to add subtitle'}[o.ph]||'';
+  else o.text.split('\n').forEach(l=>{const p=document.createElement('div');p.className='p'+(o.bul?' bu':'');p.textContent=l;t.appendChild(p)});
+  e.appendChild(t)}
+ return e}
+function slideEl(s,pv){const e=document.createElement('div');e.className='sl'+(pv?' pv':'');e.style.background=s.bg;s.objs.forEach(o=>e.appendChild(objEl(o,pv)));return e}
+function fitK(){const c=$('#cv');return Math.max(.1,Math.min((c.clientWidth-40)/W,(c.clientHeight-40)/H))}
+function layoutStage(){k=zoomMode==='fit'?fitK():zoomK;const sw=$('#sw');sw.style.width=W*k+'px';sw.style.height=H*k+'px';$('#st').style.transform=`scale(${k})`;$('#ov').style.transform=`scale(${k})`;$('#zl').textContent=Math.round(k*100)+'%'}
+function render(){
+ const st=$('#st');st.innerHTML='';st.appendChild(slideEl(S(),false));layoutStage();drawSel();
+ const tn=$('#thumbs');const tk=(tn.clientWidth>150?116:84)/W;tn.innerHTML='';
+ D.slides.forEach((s,i)=>{const d=document.createElement('div');d.className='tn'+(i===cur?' on':'');d.dataset.i=i;
+  d.innerHTML=`<span class="no">${i+1}</span>`;const c=document.createElement('div');c.className='tc';c.style.cssText=`width:${W*tk}px;height:${H*tk}px`;
+  const sl=slideEl(s,true);sl.style.transform=`scale(${tk})`;sl.style.transformOrigin='0 0';c.appendChild(sl);d.appendChild(c);tn.appendChild(d)});
+ const on=tn.querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+ $('#pg').textContent=`Slide ${cur+1} of ${D.slides.length}`;$('#nt').value=S().notes||'';$('#fn').value=D.title;
+ document.title=D.title+' - ColorSlides';upRib()}
+function drawSel(){const ov=$('#ov');ov.innerHTML='';const o=SO();if(!o||editing)return;
+ const b=document.createElement('div');b.className='sb';b.style.cssText=`left:${o.x}px;top:${o.y}px;width:${o.w}px;height:${o.h}px;border-width:${2/k}px`;ov.appendChild(b);
+ const hs=o.sh==='line'&&o.k!=='img'?['w','e']:['nw','n','ne','e','se','s','sw','w'];const z=16/k;
+ hs.forEach(h=>{const d=document.createElement('div');d.className='hd';d.dataset.h=h;
+  const px=h.includes('w')?o.x:h.includes('e')?o.x+o.w:o.x+o.w/2,py=h.includes('n')?o.y:h.includes('s')?o.y+o.h:o.y+o.h/2;
+  d.style.cssText=`left:${px-z/2}px;top:${py-z/2}px;width:${z}px;height:${z}px;border-width:${2/k}px;cursor:${h}-resize`;ov.appendChild(d)})}
+
+/* ---------- interaction ---------- */
+let drag=null,lastTap={id:null,t:0};
+function pt2(e){const r=$('#st').getBoundingClientRect();return[(e.clientX-r.left)/k,(e.clientY-r.top)/k]}
+$('#sw').addEventListener('pointerdown',e=>{
+ if(editing&&e.target.closest('.tx.ed'))return;if(editing)endEdit();
+ const h=e.target.closest('.hd'),ob=e.target.closest('.ob');const[px,py]=pt2(e);
+ if(h&&SO()){const o=SO();drag={m:h.dataset.h,sx:px,sy:py,o:{x:o.x,y:o.y,w:o.w,h:o.h},moved:false,id:o.id}}
+ else if(ob&&!e.target.closest('#ov')||(ob=hit(px,py))){const id=ob.dataset?ob.dataset.id:ob.id;selId=id;const o=O(id);
+  if(lastTap.id===id&&Date.now()-lastTap.t<400&&o.k!=='img'&&o.sh!=='line'){lastTap={};e.preventDefault();render();setTimeout(()=>startEdit(id),40);return}
+  lastTap={id,t:Date.now()};drag={m:'move',sx:px,sy:py,o:{x:o.x,y:o.y,w:o.w,h:o.h},moved:false,id};drawSel();upRib()}
+ else{selId=null;drawSel();upRib();return}
+ e.preventDefault();$('#sw').setPointerCapture&&$('#sw').setPointerCapture(e.pointerId)});
+function hit(x,y){const os=S().objs;for(let i=os.length-1;i>=0;i--){const o=os[i];if(x>=o.x-6&&x<=o.x+o.w+6&&y>=o.y-6&&y<=o.y+o.h+6)return o}return null}
+$('#sw').addEventListener('pointermove',e=>{if(!drag)return;const[px,py]=pt2(e),dx=px-drag.sx,dy=py-drag.sy;if(!drag.moved&&Math.abs(dx)+Math.abs(dy)<3)return;
+ if(!drag.moved){hist.push(ser());fut=[];drag.moved=true}
+ const o=O(drag.id),b=drag.o,m=drag.m;
+ if(m==='move'){o.x=Math.round(b.x+dx);o.y=Math.round(b.y+dy)}
+ else{let x=b.x,y=b.y,w=b.w,h=b.h;
+  if(m.includes('e'))w=b.w+dx;if(m.includes('s'))h=b.h+dy;if(m.includes('w')){w=b.w-dx;x=b.x+dx}if(m.includes('n')){h=b.h-dy;y=b.y+dy}
+  if(o.k==='img'&&m.length===2){const r=b.w/b.h;h=w/r;if(m.includes('n'))y=b.y+b.h-h}
+  const mn=o.sh==='line'?4:16;if(w<mn){if(m.includes('w'))x=b.x+b.w-mn;w=mn}if(h<mn){if(m.includes('n'))y=b.y+b.h-mn;h=mn}
+  if(o.sh==='line'&&(m==='e'||m==='w'))h=b.h;
+  o.x=Math.round(x);o.y=Math.round(y);o.w=Math.round(w);o.h=Math.round(h)}
+ dirty=true;const old=$('#st .ob[data-id="'+o.id+'"]');if(old)old.replaceWith(objEl(o,false));drawSel()});
+addEventListener('pointerup',()=>{if(drag&&drag.moved){render();persist()}drag=null});
+function startEdit(id){const o=O(id);if(!o||o.k==='img'||o.sh==='line')return;selId=id;editing=true;drawSel();
+ const e=$('#st .ob[data-id="'+id+'"]');let t=e.querySelector('.tx');
+ if(!t){t=document.createElement('div');t.className='tx';t.style.cssText=tstyle(o);e.appendChild(t)}
+ t.className='tx ed';t.textContent=o.text;t.removeAttribute('data-p');t.contentEditable='plaintext-only';if(t.contentEditable!=='plaintext-only')t.contentEditable='true';t.focus();
+ const r=document.createRange();r.selectNodeContents(t);const s=getSelection();s.removeAllRanges();s.addRange(r);s.collapseToEnd();
+ t.addEventListener('blur',endEdit,{once:true});t.addEventListener('keydown',ev=>{if(ev.key==='Escape'){ev.preventDefault();ev.stopPropagation();t.blur()}});}
+function endEdit(){if(!editing)return;editing=false;const t=$('#st .tx.ed');if(!t){render();return}
+ let v=t.innerText.replace(/ /g,' ').replace(/\n$/,'');const o=SO();
+ if(o&&!v&&o.tbx&&o.fill==='none'&&o.st==='none')mut(()=>{S().objs=S().objs.filter(x=>x!==o);selId=null});else if(o&&v!==o.text)mut(()=>{o.text=v});else render()}
+addEventListener('keydown',e=>{
+ if($('#show').style.display==='block'){showKey(e);return}
+ const tg=e.target;if(editing||/INPUT|TEXTAREA|SELECT/.test(tg.tagName)||tg.isContentEditable)return;
+ const c=e.ctrlKey||e.metaKey,key=e.key.toLowerCase(),o=SO();
+ if(c&&key==='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(c&&key==='y'){e.preventDefault();redo()}
+ else if(c&&key==='s'){e.preventDefault();act.save()}else if(c&&key==='o'){e.preventDefault();act.open()}else if(c&&key==='p'){e.preventDefault();act.print()}
+ else if(c&&key==='c'){act.copy()}else if(c&&key==='x'){act.cut()}else if(c&&key==='v'){act.paste()}else if(c&&key==='d'){e.preventDefault();act.dup()}
+ else if(c&&key==='m'){e.preventDefault();act.addslide('content')}
+ else if(key==='f5'){e.preventDefault();act.show0()}
+ else if(o&&(key==='delete'||key==='backspace')){e.preventDefault();act.del()}
+ else if(o&&key==='enter'){e.preventDefault();startEdit(o.id)}
+ else if(o&&key.startsWith('arrow')){e.preventDefault();const d=e.shiftKey?10:1;mut(()=>{if(key==='arrowleft')o.x-=d;if(key==='arrowright')o.x+=d;if(key==='arrowup')o.y-=d;if(key==='arrowdown')o.y+=d})}
+ else if(!o&&key==='arrowright'||key==='pagedown'){go(cur+1)}else if(!o&&key==='arrowleft'||key==='pageup'){go(cur-1)}
+ else if(key==='escape'){selId=null;drawSel();upRib()}});
+function go(i){if(i<0||i>=D.slides.length)return;cur=i;selId=null;render()}
+$('#thumbs').addEventListener('click',e=>{const t=e.target.closest('.tn');if(t)go(+t.dataset.i)});
+$('#nt').addEventListener('input',e=>{S().notes=e.target.value;dirty=true;persist()});
+new ResizeObserver(()=>{if(zoomMode==='fit'){layoutStage();drawSel()}}).observe($('#cv'));
+$('#cv').addEventListener('pointerdown',e=>{if(e.target===$('#cv')){if(editing)endEdit();selId=null;drawSel();upRib()}});
+$('#cv').addEventListener('wheel',e=>{if(e.ctrlKey){e.preventDefault();act[e.deltaY<0?'zin':'zout']()}},{passive:false});
+
+/* ---------- ribbon ---------- */
+const bt=(a,i,l,t)=>`<button class="b" data-a="${a}" title="${esc(t||l)}">${ic(i,24)}<span>${l}</span></button>`;
+const sb=(a,i,t,x)=>`<button class="s" data-a="${a}" title="${esc(t)}" ${x||''}>${ic(i,18)}</button>`;
+const grp=(l,h)=>`<div class="g"><div class="gb">${h}</div><div class="gl">${l}</div></div>`;
+const colBtn=(a,i,t,id)=>`<button class="s cb" data-a="${a}" title="${t}">${ic(i,18)}<i class="bar" id="${id}" style="background:#2563eb"></i></button>`;
+const TABS={
+Home:()=>grp('Clipboard',bt('paste','paste','Paste')+`<div class="col">${sb('cut','cut','Cut (Ctrl+X)')}${sb('copy','copy','Copy (Ctrl+C)')}</div>`)+
+ grp('Slides',bt('newmenu','plus','New slide','New slide')+`<div class="col">${sb('layoutmenu','layout','Change layout')}${sb('dupslide','dup','Duplicate slide')}</div><div class="col">${sb('slup','chevup','Move slide up')}${sb('sldn','chev','Move slide down')}</div>${sb('delslide','trash','Delete slide')}`)+
+ grp('Font',`<div class="col"><div class="row"><select data-s="ff" style="width:128px" title="Font">${FONTS.map(f=>`<option>${f}</option>`).join('')}</select><select data-s="fs" style="width:56px" title="Font size">${[10,12,14,16,18,20,24,28,32,36,40,48,54,60,72,96].map(f=>`<option>${f}</option>`).join('')}</select></div>
+ <div class="row">${sb('b','bold','Bold','data-t="b"')}${sb('i','italic','Italic','data-t="i"')}${sb('u','underline','Underline','data-t="u"')}${colBtn('tcol','fcolor','Text colour','bar-t')}${sb('fgrow','grow','Bigger text')}${sb('fshr','shrink','Smaller text')}</div></div>`)+
+ grp('Paragraph',`<div class="col"><div class="row">${sb('bul','ul','Bullets','data-t="bul"')}${sb('al-l','al','Align left','data-t="al-l"')}${sb('al-c','ac','Centre','data-t="al-c"')}${sb('al-r','ar','Align right','data-t="al-r"')}</div><div class="row">${sb('va-t','chevup','Top','data-t="va-t"')}${sb('va-m','ocn','Middle','data-t="va-m"')}${sb('va-b','chev','Bottom','data-t="va-b"')}</div></div>`)+
+ grp('Drawing',`<div class="col"><div class="row">${sb('shapemenu','shapes','Shapes')}${colBtn('fcol','ofill','Shape fill','bar-f')}${colBtn('scol','oline','Shape outline','bar-s')}</div><div class="row"><select data-s="sw" style="width:84px" title="Outline thickness">${[0,1,2,3,4,6,8,12].map(f=>`<option value="${f}">${f?f+' pt':'None'}</option>`).join('')}</select></div></div>`)+
+ grp('Arrange',`<div class="col">${sb('front','obig','Bring to front')}${sb('back','osmall','Send to back')}</div><div class="col">${sb('ch','owl','Centre horizontally')}${sb('cvv','ocn','Centre vertically')}</div>`+bt('edit','tbox','Edit text','Edit text (Enter)')+bt('del','trash','Delete','Delete object (Del)')),
+Insert:()=>grp('Text',bt('tbox','tbox','Text box'))+grp('Images',bt('pic','pic','Picture'))+grp('Shapes',SHAPES.map(s=>bt('shape-'+s[0],s[0],s[1].replace(' rectangle',' rect.'))).join(''))+grp('Slides',bt('newmenu','plus','New slide')),
+Design:()=>grp('Themes',TH.map((t,i)=>`<button class="th" data-a="theme-${i}" title="${t.n}" style="background:${t.bg};color:${t.tx}"><span>Aa</span><i class="sw" style="background:${t.ac}"></i></button>`).join(''))+grp('Background',bt('bgcol','bg','Slide colour')+bt('bgall','bg','Apply to all','Apply this colour to all slides')),
+View:()=>grp('Presentation',bt('show0','play','From start','Start from slide 1 (F5)')+bt('show1','play','From current','Start from the current slide'))+grp('Zoom',bt('zin','zin','Zoom in')+bt('zout','zout','Zoom out')+bt('zfit','zfit','Fit'))+grp('Show',bt('tnotes','notes','Notes')+bt('tthumbs','layout','Slide list')+bt('dark','dark','Dark mode'))
+};
+let tab='Home';
+function buildRib(){const tabs=['File','Home','Insert','Design','View'];$('#tabs').innerHTML=tabs.map(t=>`<button data-tab="${t}" class="${t===tab?'on':''}">${t}</button>`).join('');$('#rib').innerHTML=TABS[tab]();upRib()}
+function upRib(){const o=SO(),on=(sel,v)=>document.querySelectorAll(sel).forEach(x=>x.classList.toggle('on',!!v));
+ document.querySelectorAll('[data-t]').forEach(x=>{const t=x.dataset.t;let v=0;if(o){if(t.startsWith('al-'))v=o.al===t[3];else if(t.startsWith('va-'))v=o.va===t[3];else v=o[t]}x.classList.toggle('on',!!v)});
+ const f=$('[data-s=ff]'),z=$('[data-s=fs]'),w=$('[data-s=sw]');if(o){if(f)f.value=o.ff;if(z){if(![...z.options].some(x=>x.value==o.fs)){const op=new Option(o.fs,o.fs);z.add(op)}z.value=o.fs}if(w){if(![...w.options].some(x=>x.value==o.sw))w.add(new Option(o.sw+' pt',o.sw));w.value=o.sw}}
+ const bs=(id,c)=>{const e=$('#'+id);if(e)e.style.background=c==='none'||!c?'transparent':c;};bs('bar-t',o&&o.c);bs('bar-f',o&&o.fill);bs('bar-s',o&&o.st)}
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.tab==='File'){pop(b,fileMenu());return}tab=b.dataset.tab;buildRib()});
+const fileMenu=()=>[['new','new','New'],['open','open','Open…  (.pptx or .cslides)'],['save','save','Save  (.cslides)'],['pptx','save','Export PowerPoint (.pptx)'],['pdf','pdf','Export PDF'],['print','print','Print'],'-',['about','about','About']].map(m=>m==='-'?'<div class="mi sep"></div>':`<button class="mi" data-a="${m[0]}">${ic(m[1],18)}${m[2]}</button>`).join('');
+$('#rib').addEventListener('change',e=>{const s=e.target.dataset.s;if(!s)return;const o=SO();if(!o){toast('Click an object on the slide first');upRib();return}const v=e.target.value;mut(()=>{if(s==='ff')o.ff=v;else o[s]=+v})});
+function pop(el,html,after){const p=$('#pop');p.innerHTML=html;p.style.display='block';const r=el.getBoundingClientRect();p.style.left=Math.max(4,Math.min(r.left,innerWidth-p.offsetWidth-6))+'px';p.style.top=Math.min(r.bottom+4,innerHeight-p.offsetHeight-6)+'px';p._a=after}
+const closePop=()=>{$('#pop').style.display='none'};
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('#pop')&&!e.target.closest('[data-a=newmenu],[data-a=layoutmenu],[data-a=shapemenu],[data-a=tcol],[data-a=fcol],[data-a=scol],[data-a=bgcol],[data-tab=File]'))closePop()},true);
+const palHTML=(none)=>`<div class="pal">${PAL.map(c=>`<i data-c="${c}" style="background:${c}" title="${c}"></i>`).join('')}</div>${none?'<button class="mi" data-c="none">No colour</button>':''}<label class="mi">More colours… <input type="color" data-cc style="margin-left:auto"></label>`;
+const layHTML=(a)=>`<div class="lay">${LAYS.map(l=>`<div data-a="${a}-${l[0]}"><div class="lp">${{title:'<b style="left:12px;top:12px;width:60px;height:8px"></b><b style="left:26px;top:26px;width:34px;height:4px"></b>',content:'<b style="left:8px;top:6px;width:60px;height:7px"></b><b style="left:8px;top:18px;width:70px;height:4px"></b><b style="left:8px;top:26px;width:70px;height:4px"></b><b style="left:8px;top:34px;width:50px;height:4px"></b>',two:'<b style="left:6px;top:6px;width:76px;height:6px"></b><b style="left:6px;top:18px;width:34px;height:22px"></b><b style="left:46px;top:18px;width:34px;height:22px"></b>',only:'<b style="left:8px;top:8px;width:60px;height:8px"></b>',section:'<b style="left:8px;top:16px;width:64px;height:8px"></b><b style="left:8px;top:30px;width:20px;height:3px"></b>',blank:''}[l[0]]}</div>${l[1]}</div>`).join('')}</div>`;
+let colorFor=null;
+function applyColor(c){const o=SO();if(colorFor==='bg'){mut(()=>{S().bg=c})}else if(colorFor==='bgall'){mut(()=>D.slides.forEach(s=>s.bg=c))}else if(o){mut(()=>{if(colorFor==='t')o.c=c;if(colorFor==='f')o.fill=c;if(colorFor==='s'){o.st=c;if(c!=='none'&&!o.sw)o.sw=2}})}else toast('Click an object on the slide first');closePop()}
+$('#pop').addEventListener('click',e=>{const c=e.target.closest('[data-c]');if(c){applyColor(c.dataset.c);return}const a=e.target.closest('[data-a]');if(a){closePop();run(a.dataset.a)}});
+$('#pop').addEventListener('input',e=>{if(e.target.dataset.cc!==undefined)applyColor(e.target.value)});
+function run(a){const m=a.match(/^(\w+)-(\w+)$/);if(m&&act[m[1]+'_'])act[m[1]+'_'](m[2]);else act[a]&&act[a]()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b||b.closest('#pop'))return;pend=b;run(b.dataset.a)});
+let pend;
+function needObj(){const o=SO();if(!o)toast('Click an object on the slide first');return o}
+function addObj(o,sel=true){mut(()=>{S().objs.push(o);selId=o.id})}
+function readImg(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const m=1600,sc=Math.min(1,m/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);const g=cv.getContext('2d');g.drawImage(im,0,0,cv.width,cv.height);const png=/png|gif|svg|webp/.test(file.type||'');res({u:cv.toDataURL(png?'image/png':'image/jpeg',.9),w:cv.width,h:cv.height})};im.onerror=()=>rej(Error('bad image'));im.src=r.result};r.readAsDataURL(file)})}
+function putImage(u,w,h){const key=uid();IMG[key]=u;const sc=Math.min(600/w,380/h,1),ww=Math.round(w*sc),hh=Math.round(h*sc);addObj({id:uid(),k:'img',src:key,x:Math.round((W-ww)/2),y:Math.round((H-hh)/2),w:ww,h:hh})}
+$('#fpic').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const r=await readImg(f);putImage(r.u,r.w,r.h)}catch(x){toast('Could not read that picture')}};
+const clone=o=>JSON.parse(JSON.stringify(o));
+const act={
+ paste(){if(!clip)return toast('Nothing copied yet');const o=clone(clip);o.id=uid();o.x+=20;o.y+=20;clip=clone(o);addObj(o)},
+ copy(){const o=needObj();if(o){clip=clone(o);toast('Copied')}},cut(){const o=needObj();if(o){clip=clone(o);act.del()}},
+ dup(){const o=needObj();if(!o)return;const n=clone(o);n.id=uid();n.x+=20;n.y+=20;addObj(n)},
+ del(){const o=needObj();if(o)mut(()=>{S().objs=S().objs.filter(x=>x.id!==o.id);selId=null})},
+ edit(){const o=needObj();if(o)startEdit(o.id)},
+ newmenu(){pop(pend,layHTML('addslide'))},layoutmenu(){pop(pend,layHTML('lay'))},
+ addslide_(l){mut(()=>{D.slides.splice(cur+1,0,newSlide(l));cur++;selId=null})},addslide(l){act.addslide_(l||'content')},
+ lay_(l){mut(()=>{const s=S(),ex=s.objs.filter(o=>!o.ph&&!(o.sh==='rect'&&o.fill===th().ac&&!o.text));const old=s.objs.filter(o=>o.ph&&o.text);s.objs=layout(l);
+   // keep text typed into old placeholders
+   const ph=s.objs.filter(o=>o.ph);old.forEach((o,i)=>{if(ph[i])ph[i].text=o.text});s.objs=s.objs.concat(ex.filter(o=>o.k==='img'||!o.ph));selId=null})},
+ dupslide(){mut(()=>{const s=clone(S());s.id=uid();s.objs.forEach(o=>o.id=uid());D.slides.splice(cur+1,0,s);cur++;selId=null})},
+ delslide(){mut(()=>{if(D.slides.length===1)D.slides[0]=newSlide('blank');else{D.slides.splice(cur,1);cur=Math.min(cur,D.slides.length-1)}selId=null})},
+ slup(){if(cur>0)mut(()=>{const s=D.slides.splice(cur,1)[0];D.slides.splice(--cur,0,s)})},sldn(){if(cur<D.slides.length-1)mut(()=>{const s=D.slides.splice(cur,1)[0];D.slides.splice(++cur,0,s)})},
+ b(){tog('b')},i(){tog('i')},u(){tog('u')},bul(){tog('bul')},
+ 'al-l'(){setp('al','l')},'al-c'(){setp('al','c')},'al-r'(){setp('al','r')},'va-t'(){setp('va','t')},'va-m'(){setp('va','m')},'va-b'(){setp('va','b')},
+ fgrow(){const o=needObj();if(o)mut(()=>o.fs=Math.min(200,Math.round(o.fs*1.12)+1))},fshr(){const o=needObj();if(o)mut(()=>o.fs=Math.max(6,Math.round(o.fs/1.12)-1))},
+ tcol(){if(!needObj())return;colorFor='t';pop(pend,palHTML(false))},fcol(){if(!needObj())return;colorFor='f';pop(pend,palHTML(true))},scol(){if(!needObj())return;colorFor='s';pop(pend,palHTML(true))},
+ bgcol(){colorFor='bg';pop(pend,palHTML(false))},bgall(){colorFor='bgall';pop(pend,palHTML(false))},
+ front(){const o=needObj();if(o)mut(()=>{const a=S().objs;a.splice(a.indexOf(o),1);a.push(o)})},back(){const o=needObj();if(o)mut(()=>{const a=S().objs;a.splice(a.indexOf(o),1);a.unshift(o)})},
+ ch(){const o=needObj();if(o)mut(()=>o.x=Math.round((W-o.w)/2))},cvv(){const o=needObj();if(o)mut(()=>o.y=Math.round((H-o.h)/2))},
+ shapemenu(){pop(pend,SHAPES.map(s=>`<button class="mi" data-a="shape-${s[0]}">${ic(s[0],20)}${s[1]}</button>`).join(''))},
+ shape_(sh){const t=th();const line=sh==='line';addObj(tb({sh,x:380,y:line?270:195,w:line?200:200,h:line?8:150,fill:line?'none':t.ac,st:line?t.ac:'none',sw:line?5:2,c:t.bg==='#ffffff'||t.bg[1]>'7'?'#ffffff':t.tx,al:'c',va:'m',fs:24}))},
+ tbox(){addObj(tb({x:300,y:230,w:360,h:70,fs:28,text:'',tbx:1}));const o=SO();setTimeout(()=>startEdit(o.id),30)},
+ pic(){$('#fpic').click()},
+ theme_(i){const od=th(),nw=TH[+i];mut(()=>{D.theme=+i;D.slides.forEach(s=>{s.bg=nw.bg;s.objs.forEach(o=>{const lc=x=>x&&x.toLowerCase();if(lc(o.c)===od.tx)o.c=nw.tx;if(lc(o.fill)===od.ac)o.fill=nw.ac;if(lc(o.st)===od.ac)o.st=nw.ac})})})},
+ zin(){zoomMode='man';zoomK=Math.min(3,k*1.2);layoutStage();drawSel()},zout(){zoomMode='man';zoomK=Math.max(.15,k/1.2);layoutStage();drawSel()},zfit(){zoomMode='fit';layoutStage();drawSel()},
+ tnotes(){document.body.classList.toggle('nonotes');layoutStage()},tthumbs(){document.body.classList.toggle('nothumbs');render()},dark(){document.body.classList.toggle('dk');try{localStorage.setItem('cslides-dk',document.body.classList.contains('dk')?1:0)}catch(e){}},
+ undo,redo,
+ new(){dlg('New presentation','Start a new presentation? Save the current one first if you need it.',[['Cancel',0],['New',1,()=>{newDoc();render();persist();toast('New presentation')}]])},
+ open(){$('#fopen').click()},
+ save(){const j=JSON.stringify({app:'ColorSlides',v:1,d:D,imgs:usedImgs()});dl(new Blob([j],{type:'application/json'}),fname()+'.cslides');dirty=false;toast('Saved '+fname()+'.cslides')},
+ async pptx(){try{dl(await makePptx(),fname()+'.pptx');toast('Exported '+fname()+'.pptx')}catch(e){console.error(e);dlg('Export failed',esc(e.message||e))}},
+ print(){buildPrint();setTimeout(()=>print(),50)},
+ pdf(){buildPrint();if(window.desk)desk.savePDF(fname()).then(p=>p&&toast('Saved PDF'));else dlg('Save as PDF','In the next window choose <b>Save as PDF</b> (or <b>Microsoft Print to PDF</b>) as the printer, then press Save.',[['Continue',1,()=>setTimeout(()=>print(),50)]])},
+ about(){dlg('About ColorSlides','ColorSlides 1.0 — a simple, free presentation maker written from scratch.<br>Saves .cslides, exports .pptx and PDF. Works offline. Your slides never leave your device.<br><small>Icons: Tabler Icons (MIT licence).</small>')},
+ show0(){startShow(0)},show1(){startShow(cur)},sprev(){showGo(-1)},snext(){showGo(1)},sexit(){endShow()}
+};
+function tog(p){const o=needObj();if(o)mut(()=>o[p]=o[p]?0:1)}function setp(p,v){const o=needObj();if(o)mut(()=>o[p]=v)}
+const fname=()=>(D.title||'Presentation').replace(/[\\/:*?"<>|]/g,'_');
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
+
+/* ---------- print / slideshow ---------- */
+function buildPrint(){const p=$('#prt');p.innerHTML='';D.slides.forEach(s=>{const pg=document.createElement('div');pg.className='pg';pg.appendChild(slideEl(s,true));p.appendChild(pg)})}
+let sh=0;
+function startShow(i){sh=i;const el=$('#show');el.style.display='block';showDraw();try{el.requestFullscreen&&el.requestFullscreen()}catch(e){}el.focus&&el.focus()}
+function showDraw(){const el=$('#show');el.querySelectorAll('.sl').forEach(x=>x.remove());const s=slideEl(D.slides[sh],true),sc=Math.min(innerWidth/W,innerHeight/H);s.style.transform=`translate(${(innerWidth-W*sc)/2}px,${(innerHeight-H*sc)/2}px) scale(${sc})`;el.insertBefore(s,$('#sctl'));$('#spg').textContent=`${sh+1} / ${D.slides.length}`}
+function showGo(d){const n=sh+d;if(n>=D.slides.length){endShow();return}if(n<0)return;sh=n;showDraw()}
+function endShow(){$('#show').style.display='none';try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}cur=Math.min(sh,D.slides.length-1);render()}
+function showKey(e){const k=e.key;if(k==='Escape')endShow();else if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();showGo(1)}else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();showGo(-1)}}
+let hvT;$('#show').addEventListener('pointermove',()=>{$('#show').classList.add('hv');clearTimeout(hvT);hvT=setTimeout(()=>$('#show').classList.remove('hv'),2200)});
+let sx0=0;$('#show').addEventListener('pointerdown',e=>{if(e.target.closest('#sctl'))return;sx0=e.clientX});
+$('#show').addEventListener('pointerup',e=>{if(e.target.closest('#sctl'))return;const d=e.clientX-sx0;if(d>60)showGo(-1);else if(d<-60)showGo(1);else if(Math.abs(d)<=60)showGo(e.clientX<innerWidth*.2?-1:1)});
+addEventListener('resize',()=>{if($('#show').style.display==='block')showDraw()});
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&$('#show').style.display==='block')endShow()});
+
+/* ---------- zip / pptx ---------- */
+const CRCT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc32=b=>{let c=-1;for(let i=0;i<b.length;i++)c=CRCT[(c^b[i])&255]^(c>>>8);return(c^-1)>>>0};
+function zip(files,mime){const enc=new TextEncoder(),parts=[],cd=[];let off=0;
+ for(const f of files){const n=enc.encode(f.name),c=crc32(f.data),s=f.data.length;
+ const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(12,0x21,true);h.setUint32(14,c,true);h.setUint32(18,s,true);h.setUint32(22,s,true);h.setUint16(26,n.length,true);
+ parts.push(new Uint8Array(h.buffer),n,f.data);
+ const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint16(8,0x0800,true);d.setUint16(14,0x21,true);d.setUint32(16,c,true);d.setUint32(20,s,true);d.setUint32(24,s,true);d.setUint16(28,n.length,true);d.setUint32(42,off,true);
+ cd.push(new Uint8Array(d.buffer),n);off+=30+n.length+s}
+ const cs=cd.reduce((a,x)=>a+x.length,0),e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+ return new Blob([...parts,...cd,new Uint8Array(e.buffer)],{type:mime})}
+async function unzip(buf){const v=new DataView(buf),u=new Uint8Array(buf);let e=u.length-22;while(e>=0&&v.getUint32(e,true)!==0x06054b50)e--;if(e<0)throw Error('This is not a valid .pptx file');
+ const n=v.getUint16(e+10,true);let p=v.getUint32(e+16,true);const out={},dec=new TextDecoder();
+ for(let i=0;i<n;i++){const meth=v.getUint16(p+10,true),cs=v.getUint32(p+20,true),nl=v.getUint16(p+28,true),xl=v.getUint16(p+30,true),cl=v.getUint16(p+32,true),lo=v.getUint32(p+42,true),name=dec.decode(u.subarray(p+46,p+46+nl));p+=46+nl+xl+cl;
+ const ds=lo+30+v.getUint16(lo+26,true)+v.getUint16(lo+28,true);out[name]=async()=>{let d=u.subarray(ds,ds+cs);if(meth===8)d=new Uint8Array(await new Response(new Blob([d]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());return d}}
+ return out}
+const NS='xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"';
+const XH='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+const xe=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'');
+const E=v=>Math.round(v*12700),hx=c=>(c||'#000000').replace('#','').slice(0,6).toUpperCase().padStart(6,'0');
+const REL='http://schemas.openxmlformats.org/officeDocument/2006/relationships/';
+const PRST={rect:'rect',round:'roundRect',ellipse:'ellipse',tri:'triangle',diamond:'diamond',hexa:'hexagon',arrow:'rightArrow',star:'star5',heart:'heart',line:'line'};
+const dataBytes=u=>{const b=atob(u.split(',')[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a};
+async function makePptx(){
+ const T=new TextEncoder(),F=[],add=(n,s)=>F.push({name:n,data:typeof s==='string'?T.encode(s):s});
+ const sf=c=>`<a:solidFill><a:srgbClr val="${hx(c)}"/></a:solidFill>`;
+ const media=[];let slideXml=[];
+ D.slides.forEach((s,si)=>{let id=2,rels=[`<Relationship Id="rId1" Type="${REL}slideLayout" Target="../slideLayouts/slideLayout1.xml"/>`],body='';
+  s.objs.forEach(o=>{id++;const xf=`<a:xfrm><a:off x="${E(o.x)}" y="${E(o.y)}"/><a:ext cx="${E(o.w)}" cy="${E(o.h)}"/></a:xfrm>`;
+   if(o.k==='img'){const u=IMG[o.src];if(!u)return;const ext=/image\/png/.test(u)?'png':'jpeg',nm=`image${media.length+1}.${ext}`;media.push({name:'ppt/media/'+nm,data:dataBytes(u)});const rid='rId'+(rels.length+1);rels.push(`<Relationship Id="${rid}" Type="${REL}image" Target="../media/${nm}"/>`);
+    body+=`<p:pic><p:nvPicPr><p:cNvPr id="${id}" name="Picture ${id}"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr>${xf}<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>`;return}
+   const line=o.sh==='line',istx=o.fill==='none'&&o.st==='none'&&o.sh==='rect',has=!!o.text;
+   if(!has&&o.ph&&o.fill==='none'&&o.st==='none')return;
+   const fill=line||o.fill==='none'?'<a:noFill/>':sf(o.fill),ln=o.st==='none'||!o.sw?'<a:ln><a:noFill/></a:ln>':`<a:ln w="${E(o.sw)}">${sf(o.st)}</a:ln>`;
+   const rp=`lang="en-US" sz="${Math.round(o.fs*100)}" b="${o.b?1:0}" i="${o.i?1:0}"${o.u?' u="sng"':''} dirty="0"`,rpc=`${sf(o.c)}<a:latin typeface="${xe(o.ff)}"/><a:cs typeface="${xe(o.ff)}"/>`;
+   const paras=(o.text||'').split('\n').map(l=>{const pp=`<a:pPr algn="${{l:'l',c:'ctr',r:'r'}[o.al]||'l'}"${o.bul?' marL="342900" indent="-342900"':''}>${o.bul?'<a:buFont typeface="Arial"/><a:buChar char="&#8226;"/>':'<a:buNone/>'}</a:pPr>`;
+     return l?`<a:p>${pp}<a:r><a:rPr ${rp}>${rpc}</a:rPr><a:t>${xe(l)}</a:t></a:r></a:p>`:`<a:p>${pp}<a:endParaRPr ${rp}/></a:p>`}).join('');
+   body+=`<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${line?'Line':istx?'TextBox':'Shape'} ${id}"/><p:cNvSpPr${istx?' txBox="1"':''}/><p:nvPr/></p:nvSpPr><p:spPr>${xf}<a:prstGeom prst="${PRST[o.sh]||'rect'}"><a:avLst/></a:prstGeom>${fill}${ln}</p:spPr>`+
+    (line?'':`<p:txBody><a:bodyPr wrap="square" lIns="101600" tIns="101600" rIns="101600" bIns="101600" anchor="${{t:'t',m:'ctr',b:'b'}[o.va]}" rtlCol="0"><a:noAutofit/></a:bodyPr><a:lstStyle/>${paras||'<a:p><a:endParaRPr lang="en-US"/></a:p>'}</p:txBody>`)+`</p:sp>`});
+  add(`ppt/slides/slide${si+1}.xml`,`${XH}<p:sld ${NS}><p:cSld><p:bg><p:bgPr>${sf(s.bg)}<a:effectLst/></p:bgPr></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>${body}</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>`);
+  add(`ppt/slides/_rels/slide${si+1}.xml.rels`,`${XH}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${rels.join('')}</Relationships>`)});
+ media.forEach(m=>F.push(m));
+ const n=D.slides.length,ct=`${XH}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="jpeg" ContentType="image/jpeg"/><Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/><Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/><Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/><Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>${D.slides.map((_,i)=>`<Override PartName="/ppt/slides/slide${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`).join('')}</Types>`;
+ const RS=(r)=>`${XH}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${r}</Relationships>`;
+ F.unshift({name:'[Content_Types].xml',data:T.encode(ct)});
+ add('_rels/.rels',RS(`<Relationship Id="rId1" Type="${REL}officeDocument" Target="ppt/presentation.xml"/>`));
+ add('ppt/presentation.xml',`${XH}<p:presentation ${NS}><p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst><p:sldIdLst>${D.slides.map((_,i)=>`<p:sldId id="${256+i}" r:id="rId${i+3}"/>`).join('')}</p:sldIdLst><p:sldSz cx="12192000" cy="6858000"/><p:notesSz cx="6858000" cy="9144000"/></p:presentation>`);
+ add('ppt/_rels/presentation.xml.rels',RS(`<Relationship Id="rId1" Type="${REL}slideMaster" Target="slideMasters/slideMaster1.xml"/><Relationship Id="rId2" Type="${REL}theme" Target="theme/theme1.xml"/>`+D.slides.map((_,i)=>`<Relationship Id="rId${i+3}" Type="${REL}slide" Target="slides/slide${i+1}.xml"/>`).join('')));
+ const tree=`<p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree>`;
+ add('ppt/slideMasters/slideMaster1.xml',`${XH}<p:sldMaster ${NS}><p:cSld><p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>${tree}</p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/><p:sldLayoutIdLst><p:sldLayoutId id="2147483649" r:id="rId1"/></p:sldLayoutIdLst><p:txStyles><p:titleStyle/><p:bodyStyle/><p:otherStyle/></p:txStyles></p:sldMaster>`);
+ add('ppt/slideMasters/_rels/slideMaster1.xml.rels',RS(`<Relationship Id="rId1" Type="${REL}slideLayout" Target="../slideLayouts/slideLayout1.xml"/><Relationship Id="rId2" Type="${REL}theme" Target="../theme/theme1.xml"/>`));
+ add('ppt/slideLayouts/slideLayout1.xml',`${XH}<p:sldLayout ${NS} type="blank" preserve="1"><p:cSld name="Blank">${tree}</p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>`);
+ add('ppt/slideLayouts/_rels/slideLayout1.xml.rels',RS(`<Relationship Id="rId1" Type="${REL}slideMaster" Target="../slideMasters/slideMaster1.xml"/>`));
+ const cl=(n,v)=>`<a:${n}><a:srgbClr val="${v}"/></a:${n}>`,fs=`<a:solidFill><a:schemeClr val="phClr"/></a:solidFill>`,ls=`<a:ln w="6350"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln>`;
+ add('ppt/theme/theme1.xml',`${XH}<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="ColorSlides"><a:themeElements><a:clrScheme name="ColorSlides">${cl('dk1','000000')}${cl('lt1','FFFFFF')}${cl('dk2','12306B')}${cl('lt2','EEF3FB')}${cl('accent1','2563EB')}${cl('accent2','60A5FA')}${cl('accent3','0EA5E9')}${cl('accent4','F59E0B')}${cl('accent5','8B5CF6')}${cl('accent6','16A34A')}${cl('hlink','1D4ED8')}${cl('folHlink','6B7280')}</a:clrScheme><a:fontScheme name="ColorSlides"><a:majorFont><a:latin typeface="Segoe UI"/><a:ea typeface=""/><a:cs typeface=""/></a:majorFont><a:minorFont><a:latin typeface="Segoe UI"/><a:ea typeface=""/><a:cs typeface=""/></a:minorFont></a:fontScheme><a:fmtScheme name="ColorSlides"><a:fillStyleLst>${fs}${fs}${fs}</a:fillStyleLst><a:lnStyleLst>${ls}${ls}${ls}</a:lnStyleLst><a:effectStyleLst>${'<a:effectStyle><a:effectLst/></a:effectStyle>'.repeat(3)}</a:effectStyleLst><a:bgFillStyleLst>${fs}${fs}${fs}</a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>`);
+ return zip(F,'application/vnd.openxmlformats-officedocument.presentationml.presentation')}
+
+/* ---------- open ---------- */
+async function importPptx(buf){
+ const z=await unzip(buf),dec=new TextDecoder(),X=async n=>z[n]?new DOMParser().parseFromString(dec.decode(await z[n]()),'application/xml'):null;
+ const L=(n,name)=>n?[...n.getElementsByTagName('*')].filter(e=>e.localName===name):[],C=(n,name)=>n?[...n.children].filter(e=>e.localName===name):[],C1=(n,name)=>C(n,name)[0];
+ const pres=await X('ppt/presentation.xml');if(!pres)throw Error('This .pptx has no presentation data');
+ const sz=L(pres,'sldSz')[0],cx=+(sz&&sz.getAttribute('cx'))||12192000,sc=W/cx;
+ const rels=await X('ppt/_rels/presentation.xml.rels'),rm={};L(rels,'Relationship').forEach(r=>rm[r.getAttribute('Id')]=r.getAttribute('Target'));
+ let order=L(pres,'sldId').map(s=>{const t=rm[s.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id')||s.getAttribute('r:id')];return t&&'ppt/'+t.replace(/^\/?(ppt\/)?/,'')});
+ order=order.filter(x=>x&&z[x]);if(!order.length)order=Object.keys(z).filter(k=>/^ppt\/slides\/slide\d+\.xml$/.test(k)).sort((a,b)=>a.match(/\d+/)-b.match(/\d+/));
+ const th0=await X('ppt/theme/theme1.xml'),sch={};if(th0){const cs=L(th0,'clrScheme')[0];[...(cs?cs.children:[])].forEach(c=>{const v=c.firstElementChild;sch[c.localName]=v?(v.getAttribute('val')==='windowText'||v.getAttribute('val')==='window'?v.getAttribute('lastClr'):(v.getAttribute('lastClr')||v.getAttribute('val'))):'000000'})}
+ const smap={tx1:'dk1',bg1:'lt1',tx2:'dk2',bg2:'lt2'};
+ const col=n=>{if(!n)return null;const s=C1(n,'solidFill');if(!s)return null;const c=s.firstElementChild;if(!c)return null;const v=c.getAttribute('val');if(c.localName==='srgbClr')return'#'+v;if(c.localName==='schemeClr'){const h=sch[smap[v]||v];return h?'#'+h:null}return null};
+ const slides=[];let skipped=0;
+ for(const path of order){const doc=await X(path),sr=await X(path.replace('slides/','slides/_rels/')+'.rels'),rr={};L(sr,'Relationship').forEach(r=>rr[r.getAttribute('Id')]=r.getAttribute('Target'));
+  const s={id:uid(),bg:'#ffffff',notes:'',objs:[]};
+  const bg=L(doc,'bg')[0];if(bg){const c=col(L(bg,'bgPr')[0]);if(c)s.bg=c}
+  const tree=L(doc,'spTree')[0];
+  for(const n of [...(tree?tree.children:[])]){
+   if(n.localName==='sp'){const spPr=C1(n,'spPr'),xf=spPr&&C1(spPr,'xfrm'),ph=L(C1(n,'nvSpPr'),'ph')[0],pt=ph?(ph.getAttribute('type')||'body'):null;
+    let x,y,w,h;if(xf){const o=C1(xf,'off'),e=C1(xf,'ext');x=+o.getAttribute('x')*sc;y=+o.getAttribute('y')*sc;w=+e.getAttribute('cx')*sc;h=+e.getAttribute('cy')*sc}
+    else{[x,y,w,h]=pt==='ctrTitle'?[80,170,800,120]:pt==='title'?[60,36,840,100]:pt==='subTitle'?[160,300,640,80]:[60,160,840,330]}
+    const tx=C1(n,'txBody'),ps=C(tx,'p');const text=ps.map(p=>[...p.getElementsByTagName('*')].filter(e=>e.localName==='t'||e.localName==='br').map(e=>e.localName==='br'?'\n':e.textContent).join('')).join('\n');
+    const rp=L(tx,'rPr')[0]||L(tx,'endParaRPr')[0],pPr=L(tx,'pPr')[0],bp=C1(tx,'bodyPr');
+    const geom=spPr&&C1(spPr,'prstGeom'),pr=geom?geom.getAttribute('prst'):'rect';const inv=Object.fromEntries(Object.entries(PRST).map(([a,b])=>[b,a]));
+    let fill=spPr&&C1(spPr,'noFill')?'none':col(spPr)||'none';const lnN=spPr&&C1(spPr,'ln');let st=lnN&&!C1(lnN,'noFill')?col(lnN)||'none':'none';const swv=lnN&&lnN.getAttribute('w')?Math.max(1,Math.round(+lnN.getAttribute('w')/12700)):2;
+    if(!text&&fill==='none'&&st==='none')continue;
+    const isTitle=pt==='title'||pt==='ctrTitle';
+    s.objs.push(tb({sh:inv[pr]||'rect',x:Math.round(x),y:Math.round(y),w:Math.max(8,Math.round(w)),h:Math.max(8,Math.round(h)),fill,st,sw:swv,text,
+     ff:(()=>{const l=rp&&C1(rp,'latin'),f=l&&l.getAttribute('typeface');return f&&FONTS.includes(f)?f:'Segoe UI'})(),fs:rp&&rp.getAttribute('sz')?Math.round(+rp.getAttribute('sz')/100):(isTitle?40:24),c:(rp&&col(rp))||'#222222',b:rp&&rp.getAttribute('b')==='1'||isTitle&&!(rp&&rp.getAttribute('b')==='0')?1:0,i:rp&&rp.getAttribute('i')==='1'?1:0,u:rp&&rp.getAttribute('u')&&rp.getAttribute('u')!=='none'?1:0,
+     al:pPr&&{ctr:'c',r:'r'}[pPr.getAttribute('algn')]||(pt==='ctrTitle'||pt==='subTitle'?'c':'l'),va:bp&&{ctr:'m',b:'b'}[bp.getAttribute('anchor')]||(fill!=='none'&&!pt?'m':'t'),bul:L(tx,'buChar').length?1:0}))}
+   else if(n.localName==='pic'){const em=L(n,'blip')[0],rid=em&&(em.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','embed')||em.getAttribute('r:embed')),t=rid&&rr[rid],xf=L(n,'xfrm')[0];if(!t||!xf){skipped++;continue}
+    const mp='ppt/'+t.replace(/^\.\.\//,'').replace(/^\/?(ppt\/)?/,'');if(!z[mp]||!/\.(png|jpe?g|gif|webp|bmp)$/i.test(mp)){skipped++;continue}
+    const b=await z[mp](),mime=/png$/i.test(mp)?'image/png':/gif$/i.test(mp)?'image/gif':/webp$/i.test(mp)?'image/webp':/bmp$/i.test(mp)?'image/bmp':'image/jpeg';
+    const u=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(new Blob([b],{type:mime}))});const key=uid();IMG[key]=u;const o=C1(xf,'off'),e=C1(xf,'ext');
+    s.objs.push({id:uid(),k:'img',src:key,x:Math.round(+o.getAttribute('x')*sc),y:Math.round(+o.getAttribute('y')*sc),w:Math.round(+e.getAttribute('cx')*sc),h:Math.round(+e.getAttribute('cy')*sc)})}
+   else if(['graphicFrame','grpSp','cxnSp'].includes(n.localName))skipped++}
+  slides.push(s)}
+ if(!slides.length)throw Error('No slides found in this file');
+ return{slides,skipped}}
+async function openBytes(name,buf){try{
+ if(/\.pptx$/i.test(name)){const r=await importPptx(buf.buffer?buf.buffer.slice(buf.byteOffset,buf.byteOffset+buf.byteLength):buf);hist.push(ser());D={title:name.replace(/\.pptx$/i,''),theme:0,slides:r.slides};cur=0;selId=null;render();persist();
+  dlg('Opened '+esc(name),'Text, simple shapes and pictures were imported.'+(r.skipped?` <b>${r.skipped}</b> item(s) such as tables, charts or groups could not be imported.`:'')+'<br>Complex layouts may look different from PowerPoint.')}
+ else{const j=JSON.parse(new TextDecoder().decode(buf));if(!j.d||!j.d.slides)throw Error('Not a ColorSlides file');hist.push(ser());IMG=Object.assign(IMG,j.imgs||{});D=j.d;cur=0;selId=null;render();persist();toast('Opened '+name)}
+}catch(e){console.error(e);dlg('Could not open file',esc(e.message||e))}}
+$('#fopen').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f)openBytes(f.name,new Uint8Array(await f.arrayBuffer()))};
+addEventListener('dragover',e=>e.preventDefault());addEventListener('drop',async e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(!f)return;if(f.type.startsWith('image/')){const r=await readImg(f);putImage(r.u,r.w,r.h)}else openBytes(f.name,new Uint8Array(await f.arrayBuffer()))});
+addEventListener('paste',async e=>{if(editing||/INPUT|TEXTAREA/.test((e.target||{}).tagName))return;const it=[...(e.clipboardData?e.clipboardData.items:[])].find(i=>i.type.startsWith('image/'));if(it){e.preventDefault();const r=await readImg(it.getAsFile());putImage(r.u,r.w,r.h)}});
+addEventListener('beforeunload',e=>{persist()});
+
+/* ---------- start ---------- */
+(function init(){
+ const m={zout:'zout',zin:'zin',zfit:'zfit',sprev:'left',snext:'right',sexit:'x'};document.querySelectorAll('#stat [data-a],#sctl [data-a]').forEach(b=>b.innerHTML=ic(m[b.dataset.a],16));
+ $('#top').innerHTML=`<img class="lg" src="icon-192.png" alt=""><span class="ttl">ColorSlides</span>${[['save','Save (Ctrl+S)','save'],['undo','Undo (Ctrl+Z)','undo'],['redo','Redo (Ctrl+Y)','redo'],['print','Print (Ctrl+P)','print'],['open','Open (Ctrl+O)','open']].map(x=>`<button class="tq" data-a="${x[0]}" title="${x[1]}">${ic(x[2],19,1.9)}</button>`).join('')}<div class="dn"><input id="fn" value="Presentation1" spellcheck="false" title="Presentation name"></div><button class="tq" data-a="dark" title="Dark mode">${ic('dark',19)}</button><button class="tq" data-a="about" title="About">${ic('about',19)}</button><button class="play" data-a="show0" title="Slide show (F5)">${ic('play',18,2)}Present</button>`;
+ $('#fn').addEventListener('change',e=>{D.title=e.target.value.trim()||'Presentation1';document.title=D.title+' - ColorSlides';persist()});$('#fn').addEventListener('keydown',e=>{if(e.key==='Enter')e.target.blur()});
+ try{if(localStorage.getItem('cslides-dk')==='1')document.body.classList.add('dk')}catch(e){}
+ let ok=false;try{const a=JSON.parse(localStorage.getItem('cslides-auto'));if(a&&a.d&&a.d.slides&&a.d.slides.length){D=a.d;IMG=a.imgs||{};cur=0;ok=true}}catch(e){}
+ if(!ok)newDoc();
+ if(window.desk){document.body.classList.add('desk');desk.onOpen(f=>openBytes(f.name,f.data))}
+ buildRib();render();
+ if('serviceWorker' in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>{const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!window.__r){window.__r=1;location.reload()}})});
+})();
+</script></body></html>

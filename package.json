@@ -1,0 +1,18 @@
+{
+  "name": "colorslides",
+  "version": "1.0.0",
+  "description": "ColorSlides - simple free presentation maker",
+  "author": "Jeep01-01",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": { "start": "electron .", "dist": "electron-builder --win nsis --publish never" },
+  "devDependencies": { "electron": "^35.0.0", "electron-builder": "^25.1.8" },
+  "build": {
+    "appId": "com.jeep01.colorslides",
+    "productName": "ColorSlides",
+    "files": ["index.html", "main.js", "preload.js", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "icon.ico"],
+    "win": { "target": "nsis", "icon": "icon.ico" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "createStartMenuShortcut": true },
+    "fileAssociations": [{ "ext": "cslides", "name": "ColorSlides presentation", "role": "Editor" }]
+  }
+}
